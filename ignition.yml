@@ -1,16 +1,40 @@
 variant: fcos
 version: 1.1.0
+
 passwd:
   users:
-    - name: vagrant
-      ssh_authorized_keys:
-        - "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key"
+    - name: developer
+      uid: 2000
       groups:
         - wheel
         - sudo
         - docker
+      ssh_authorized_keys:
+        - "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key"
+
 storage:
   files:
+    - path:       /etc/hostname
+      mode:       0644
+      overwrite:  true
+      contents:
+        inline:   fcos_dev
+
+    - path:       /etc/NetworkManager/system-connections/eth0.nmconnection
+      mode:       0400
+      overwrite:  true
+      contents:
+        inline: |
+          [connection]
+          type=ethernet
+          interface-name=enp0s8
+
+          [ipv4]
+          method=manual
+          addresses=192.168.56.201/24
+          gateway=192.168.56.1
+          dns=1.1.1.1;8.8.8.8
+
     - path: /etc/fstab
       contents:
         inline: ""
@@ -19,6 +43,7 @@ storage:
         id: 0
       group:
         id: 0
+
     # https://github.com/coreos/fedora-coreos-docs/blob/master/modules/ROOT/pages/faq.adoc#why-does-ssh-stop-working-after-upgrading-to-fedora-33
     - path: /etc/ssh/sshd_config.d/10-insecure-rsa-keysig.conf
       mode: 0600

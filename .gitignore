@@ -2,3 +2,5 @@
 /fedora-coreos.box
 /id_rsa
 /ignition-staticip.cfg
+
+.vagrant
